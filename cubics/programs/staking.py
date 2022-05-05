@@ -1,0 +1,59 @@
+from cubics.modules import instruction
+from cubics.library import utils
+import time
+
+
+class Staking():
+    """
+    Staking pool class
+    """
+    def __init__(self, pool):
+        """
+        Init pool
+        """
+        self.pool = pool
+
+    def transfer(self, amount, unlocks=None, tx={}):
+        """
+        Transfer to staking pool
+        """
+        assert unlocks and unlocks > time.time()*1000+24*60*60*1000, 'invalid:time'
+
+        return instruction.wrap({
+            'function': 'staking.transfer',
+            'pool': self.pool['hash'],
+            'amount': utils.amount(amount),
+            'unlocks': unlocks,
+        }, tx)
+
+    def claim(self, claim, tx={}):
+        """
+        Claim from staking pool
+        """
+        return instruction.wrap({
+            'function': 'staking.claim',
+            'pool': self.pool['hash'],
+            'claim': claim,
+        }, tx)
+
+    def deposit(self, amount, unlocks=None, tx={}):
+        """
+        Deposit to staking pool
+        """
+        return instruction.wrap({
+            'function': 'staking.deposit',
+            'pool': self.pool['hash'],
+            'amount': utils.amount(amount),
+            'unlocks': unlocks,
+        }, tx)
+
+    def withdraw(self, claim, percentage=1, tx={}):
+        """
+        Withdraw from staking pool
+        """
+        return instruction.wrap({
+            'function': 'staking.withdraw',
+            'pool': self.pool['hash'],
+            'claim': claim,
+            'percentage': percentage,
+        }, tx)
